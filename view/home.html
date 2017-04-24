@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Go Video Room</title>
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="public/css/normalize.css">
+    <link rel="stylesheet" href="public/css/home.css">
+
+    <!-- External JS libs -->
+    <!--script src="public/js/jquery-2.1.4.min.js"></script-->
+    <script src="public/js/angular.min.js"></script>
+</head>
+<body ng-app="app" ng-controller="HomeCtrl">
+	<div id="wrapper">
+	    <h1>Welcome to Go Video</h1>
+	    <p>A webRTC with golang back-end</p>
+	    <p ng-show="meetingRoom">Entering: <span class="blink">{{meetingRoom}}</span><p>
+        <p ng-show="showErr" class="error">Invalid room format use 3~32 alpha numerical chars.</span><p>
+	    <form action="{{enterMeetingRoom()}}" method="GET" ng-submit="validateRoom($event)">
+	        <input ng-model="meetingRoom" type="text" autofocus placeholder="Meeting room"
+	        title="Please enter a valid room">
+            <!--pattern="[A-Za-z0-9]{3,40}" -->
+	        <input type="submit" value="Enter">
+	    </form>
+	</div>
+</body>
+
+<script>
+var rtcApp = angular.module('app',[]);
+rtcApp.controller('HomeCtrl', function($scope) {
+    //$scope.meetingRoom = "";
+    var roomRegex = /[a-zA-Z0-9]{3,32}/;
+    $scope.showErr = false;
+
+    $scope.validateRoom = function($event){
+        if(!roomRegex.test($scope.meetingRoom)) {
+            $scope.showErr = true;
+            $event.preventDefault();
+        }
+    }
+
+    $scope.enterMeetingRoom = function() {
+        return "/" + encodeURI($scope.meetingRoom);
+    }
+});
+</script>
+
+</html>
