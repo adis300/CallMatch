@@ -20,6 +20,7 @@ func New() *CSet {
 	}
 }
 
+/*
 func main() {
 	// Initialize our Set
 	s := New()
@@ -50,7 +51,7 @@ func main() {
 	s.Remove("item4")
 	fmt.Println("list of all items:", s.List())
 }
-
+*/
 // Add add
 func (s *CSet) Add(item string) {
 	s.Lock()
@@ -63,6 +64,22 @@ func (s *CSet) Remove(item string) {
 	s.Lock()
 	defer s.Unlock()
 	delete(s.m, item)
+}
+
+// Pop returns an item and removes the item from map
+func (s *CSet) Pop() string {
+	if len(s.m) > 0 {
+		s.Lock()
+		defer s.Unlock()
+		var item string
+		for k := range s.m {
+			item = k
+			break
+		}
+		delete(s.m, item)
+		return item
+	}
+	return ""
 }
 
 // Has looks for the existence of an item
@@ -87,10 +104,7 @@ func (s *CSet) Clear() {
 
 // IsEmpty checks for emptiness
 func (s *CSet) IsEmpty() bool {
-	if s.Len() == 0 {
-		return true
-	}
-	return false
+	return len(s.m) == 0
 }
 
 // List returns a slice of all items
