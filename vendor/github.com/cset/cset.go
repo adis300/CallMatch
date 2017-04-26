@@ -1,9 +1,8 @@
-package matcher
+package cset
 
 // A very simple example about how to use concurrent-safe SETs (using string as keys) in GO
 
 import (
-	"fmt"
 	"sync"
 )
 
