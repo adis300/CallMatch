@@ -12,8 +12,8 @@ type CSet struct {
 	sync.RWMutex
 }
 
-// New creates a new CSet struct
-func New() *CSet {
+// NewSet creates a new CSet struct
+func NewSet() *CSet {
 	return &CSet{
 		m: make(map[string]bool),
 	}
@@ -89,8 +89,8 @@ func (s *CSet) Has(item string) bool {
 	return ok
 }
 
-// Len returns the number of items in a set.
-func (s *CSet) Len() int {
+// Count returns the number of items in a set.
+func (s *CSet) Count() int {
 	return len(s.m)
 }
 
