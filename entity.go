@@ -2,6 +2,7 @@ package main
 
 // Meeting represents information about dogs.
 import (
+	"callmatch/matcher"
 	"github.com/bitly/go-simplejson"
 	"github.com/gorilla/websocket"
 )
@@ -80,6 +81,7 @@ func (meeting *Meeting) removeClient(thisConn *websocket.Conn) {
 	defer thisConn.Close()
 	thisClient := meeting.Clients[thisConn]
 	if thisClient != nil {
+		matcher.Disconnect(thisClient.SessionID)
 		delete(meeting.Clients, thisConn)
 		if len(meeting.Clients) > 0 {
 			// TODO: Notify other users

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"callmatch/matcher"
 	"flag"
 	"github.com/bitly/go-simplejson"
 	"github.com/gorilla/mux"
@@ -129,7 +130,8 @@ func socketHandler(w http.ResponseWriter, r *http.Request) {
 	defer removeConnectionFromRoom(conn, roomPath) // Gauranteed removal of a connection
 	if err == nil {
 		if len(roomPath) > 2 {
-			meeting := addClientToRoom(roomPath, conn)
+			uname := r.URL.Query().Get("uname")
+			meeting := addClientToRoom(roomPath, uname, conn)
 			for {
 				_, msg, readErr := conn.ReadMessage()
 				if readErr == nil {
@@ -174,6 +176,9 @@ func main() {
 
 	router.PathPrefix("/public").Handler(http.StripPrefix("/public", fileServer))
 	router.HandleFunc("/ws/{room}", socketHandler)
+
+	router.HandleFunc("/myroom", matcher.MyRoomHandler)
+	router.HandleFunc("/match", matcher.MatchHandler)
 
 	http.Handle("/", router)
 

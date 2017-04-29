@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/gorilla/websocket"
-	"github.com/pborman/uuid"
 )
 
 var allMeetings = make(map[string]*Meeting)
@@ -13,13 +12,13 @@ func getMeeting(room string) *Meeting {
 	return allMeetings[room]
 }
 
-func createClient() *Client {
-	return &Client{SessionID: uuid.NewRandom().String(), Resources: getDefaultClientResources()}
+func createClient(uname string) *Client {
+	return &Client{SessionID: uname, Resources: getDefaultClientResources()}
 }
 
-func addClientToRoom(room string, conn *websocket.Conn) *Meeting {
+func addClientToRoom(room, uname string, conn *websocket.Conn) *Meeting {
 	meeting := getMeeting(room)
-	client := createClient()
+	client := createClient(uname)
 
 	// Send connect event with information
 	if err := conn.WriteMessage(websocket.TextMessage, getConnectMessage(client.SessionID)); err != nil {

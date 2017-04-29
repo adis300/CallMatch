@@ -92,8 +92,8 @@ func MatchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// DisconnectRoom disconnects a user from his/her room
-func DisconnectRoom(uname string) {
+// Disconnect disconnects a user from his/her room
+func Disconnect(uname string) {
 	if roomID, ok := paired.Get(uname).(string); ok {
 		pair := roomMap.Get(roomID).(Pair)
 		paired.Remove(pair.Male)
@@ -101,5 +101,18 @@ func DisconnectRoom(uname string) {
 		roomMap.Remove(roomID)
 	} else {
 		log.Println("WARNING:Disconnect:User not found")
+	}
+}
+
+// MyRoomHandler provides look up method for getting user's current room information
+func MyRoomHandler(w http.ResponseWriter, r *http.Request) {
+
+	uname := r.URL.Query().Get("uname")
+	w.Header().Set("Content-Type", "application/json")
+
+	if roomID, ok := paired.Get(uname).(string); ok {
+		w.Write([]byte(`{"code":200,"data":"` + roomID + `"}`))
+	} else {
+		w.Write([]byte(`{"code":200,"msg":"Room not found", "data": null}`))
 	}
 }
