@@ -65,7 +65,11 @@ func MatchHandler(w http.ResponseWriter, r *http.Request) {
 		if female == "" {
 			female = females.Pop()
 		}
+		log.Println("Female pop:" + female)
+
 		if female == "" {
+			males.Add(uname)
+			log.Println(males.Count())
 			fmt.Fprint(w, `{"code":200,"inst":"wait"}`)
 		} else {
 			paired.Set(female, roomID)
@@ -78,8 +82,12 @@ func MatchHandler(w http.ResponseWriter, r *http.Request) {
 		if male == "" {
 			male = males.Pop()
 		}
+		log.Println("Male pop:" + male)
+
 		if male == "" {
-			fmt.Fprint(w, `{"code":200,"inst":"wait"}`)
+			females.Add(uname)
+			log.Println(females.Count())
+			w.Write([]byte(`{"code":200,"inst":"wait"}`))
 		} else {
 			paired.Set(male, roomID)
 			paired.Set(uname, roomID)
@@ -108,6 +116,7 @@ func Disconnect(uname string) {
 func MyRoomHandler(w http.ResponseWriter, r *http.Request) {
 
 	uname := r.URL.Query().Get("uname")
+	log.Println("User checking room:" + uname)
 	w.Header().Set("Content-Type", "application/json")
 
 	if roomID, ok := paired.Get(uname).(string); ok {
