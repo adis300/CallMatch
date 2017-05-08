@@ -168,12 +168,6 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", homeHandler)
 
-	if SERVE_SECURE {
-		router.HandleFunc("/{room}", roomSecureHandler)
-	} else {
-		router.HandleFunc("/{room}", roomHandler)
-	}
-
 	router.PathPrefix("/public").Handler(http.StripPrefix("/public", fileServer))
 	router.HandleFunc("/ws/{room}", socketHandler)
 
